@@ -8,6 +8,8 @@ export type Product = {
   images: string[]; 
   category: string;
   brand:string;
+  discountPercentage:number;
+  reviews:string[];
 };
 
 type ProductState = {

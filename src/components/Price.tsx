@@ -9,7 +9,7 @@ import type { RootState } from "../store/Store";
 
 const Price = () => {
   const dispatch = useDispatch();
-  const { filteredProducts, products } = useSelector(
+  const { products } = useSelector(
     (state: RootState) => state.products
   );
 

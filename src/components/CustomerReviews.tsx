@@ -8,13 +8,21 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/Store";
 import type React from "react";
 
+type Review = {
+  rating:number;
+  comment:string;
+  date:string;
+  reviewerName:string;
+  reviewerEmail:string;
+}
+
 const CustomerReviews = () => {
   const dispatch = useDispatch();
   const { products, filteredProducts } = useSelector(
     (state: RootState) => state.products
   );
 
-  const getAverageRating = (reviews) => {
+  const getAverageRating = (reviews:Review[]) => {
     if (!reviews?.length) return 0;
     const total = reviews.reduce((sum, r) => sum + r.rating, 0);
     return total / reviews.length;
