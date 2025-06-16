@@ -9,12 +9,12 @@ import type { RootState } from "../store/Store";
 import type React from "react";
 
 type Review = {
-  rating:number;
-  comment:string;
-  date:string;
-  reviewerName:string;
-  reviewerEmail:string;
-}
+  rating: number;
+  comment: string;
+  date: string;
+  reviewerName: string;
+  reviewerEmail: string;
+};
 
 const CustomerReviews = () => {
   const dispatch = useDispatch();
@@ -22,16 +22,14 @@ const CustomerReviews = () => {
     (state: RootState) => state.products
   );
 
-  const getAverageRating = (reviews:Review[]) => {
+  const getAverageRating = (reviews: Review[]) => {
     if (!reviews?.length) return 0;
     const total = reviews.reduce((sum, r) => sum + r.rating, 0);
     return total / reviews.length;
   };
 
   const handleReviews = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // const filtered:Product;
     const value = e.target.value;
-
     let filtered: Product[] = [];
 
     switch (value) {
@@ -77,93 +75,72 @@ const CustomerReviews = () => {
 
     dispatch(AddFilteredProducts(filtered));
   };
+
+  const reviewsFields = [
+    {
+      id: "allrev",
+      value: "all",
+      label: "All",
+      star: 0,
+    },
+    {
+      id: "rvw1",
+      value: "up to four",
+      label: "& up",
+      star: 4,
+    },
+    {
+      id: "rvw2",
+      value: "up to three",
+      label: "& up",
+      star: 3,
+    },
+    {
+      id: "rvw3",
+      value: "up to two",
+      label: "& up",
+      star: 2,
+    },
+    {
+      id: "rvw4",
+      value: "up to one",
+      label: "& up",
+      star: 1,
+    },
+  ];
+
+  const handleStars = (s: number, id: string, label: string) => {
+    return (
+      <label htmlFor={id} className="text-yellow-600 flex items-center">
+        {[...Array(5)].map((_, index) =>
+          index < s ? <IoStar key={index} /> : <IoStarOutline key={index} />
+        )}
+        <span className="text-black ms-1">{label}</span>
+      </label>
+    );
+  };
+
   return (
     <>
       <h4 className="font-bold">Customer Reviews</h4>
       <div className="">
-        <div className="">
-          <input
-            id="allrev"
-            type="radio"
-            className="me-2"
-            name="review"
-            value="all"
-            onChange={handleReviews}
-          />
-          <label htmlFor="allrevs">All</label>
-        </div>
-        <div className="flex">
-          <input
-            id="rvw1"
-            type="radio"
-            className="me-2"
-            name="review"
-            value="up to four"
-            onChange={handleReviews}
-          />
-          <label htmlFor="rvw1" className="text-yellow-600 flex items-center">
-            <IoStar />
-            <IoStar />
-            <IoStar />
-            <IoStar />
-            <IoStarOutline />
-            <span className="text-black ms-1"> & up</span>
-          </label>
-        </div>
-        <div className="flex">
-          <input
-            id="rvw2"
-            type="radio"
-            className="me-2"
-            name="review"
-            value="up to three"
-            onChange={handleReviews}
-          />
-          <label htmlFor="rvw2" className="text-yellow-600 flex items-center">
-            <IoStar />
-            <IoStar />
-            <IoStar />
-            <IoStarOutline />
-            <IoStarOutline />
-            <span className="text-black ms-1"> & up</span>
-          </label>
-        </div>
-        <div className="flex">
-          <input
-            id="rvw3"
-            type="radio"
-            className="me-2"
-            name="review"
-            value="up to two"
-            onChange={handleReviews}
-          />
-          <label htmlFor="rvw3" className="text-yellow-600 flex items-center">
-            <IoStar />
-            <IoStar />
-            <IoStarOutline />
-            <IoStarOutline />
-            <IoStarOutline />
-            <span className="text-black ms-1"> & up</span>
-          </label>
-        </div>
-        <div className="flex">
-          <input
-            id="rvw3"
-            type="radio"
-            className="me-2"
-            name="review"
-            value="up to one"
-            onChange={handleReviews}
-          />
-          <label htmlFor="rvw3" className="text-yellow-600 flex items-center">
-            <IoStar />
-            <IoStarOutline />
-            <IoStarOutline />
-            <IoStarOutline />
-            <IoStarOutline />
-            <span className="text-black ms-1"> & up</span>
-          </label>
-        </div>
+        {reviewsFields.map((field, index) => (
+          <div className="flex" key={index}>
+            <input
+              id={field.id}
+              type="radio"
+              className="me-2"
+              name="review"
+              value={field.value}
+              onChange={handleReviews}
+            />
+            {field.star == 0 ? (
+              <label htmlFor={field.id}>{field.label}</label>
+            ) : (
+              handleStars(field.star, field.id, field.label)
+            )}
+          </div>
+        ))}
       </div>
     </>
   );
