@@ -1,11 +1,11 @@
 import {
-  ClearFilterdProducts,
 } from "../features/products/productSlice";
 import { useDispatch } from "react-redux";
 import CustomerReviews from "./CustomerReviews";
 import Price from "./Price";
 import Discount from "./Discount";
 import Brands from "./Brands";
+import { ClearFilterdProducts } from "../features/products/filterSlice";
 
 const HomeSidebar = () => {
   const dispatch = useDispatch();

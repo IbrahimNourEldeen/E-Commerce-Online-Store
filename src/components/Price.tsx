@@ -1,46 +1,16 @@
 import type React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  AddFilteredProducts,
-  ClearFilterdProducts,
-  type Product,
-} from "../features/products/productSlice";
-import type { RootState } from "../store/Store";
+import { useDispatch } from "react-redux";
+
+import { setSelectedPrice } from "../features/products/filterSlice";
+import { applyFilters } from "../features/products/thunks/filterThunks";
 
 const Price = () => {
   const dispatch = useDispatch();
-  const { products } = useSelector((state: RootState) => state.products);
 
   const handlePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    let filtered: Product[] = [];
-
-    switch (value) {
-      case "all":
-        dispatch(ClearFilterdProducts());
-        return;
-
-      case "Under EGP 100":
-        filtered = products?.filter((product) => product.price <= 100) || [];
-        break;
-      case "Under EGP 400":
-        filtered = products?.filter((product) => product.price <= 400) || [];
-        break;
-      case "Under EGP 800":
-        filtered = products?.filter((product) => product.price <= 800) || [];
-        break;
-      case "Under EGP 1600":
-        filtered = products?.filter((product) => product.price <= 1600) || [];
-        break;
-      case "EGP 1,600 & above":
-        filtered = products || [];
-        break;
-      default:
-        break;
-    }
-    dispatch(
-      AddFilteredProducts(filtered.sort((a, b) => b.price - a.price) || null)
-    );
+    dispatch(setSelectedPrice(value));
+    dispatch(applyFilters());
   };
 
   const pricesFields = [

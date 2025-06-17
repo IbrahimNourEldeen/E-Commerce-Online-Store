@@ -1,19 +1,17 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/Store";
-import {
-  AddFilteredProducts,
-  ClearFilterdProducts,
-  type Product,
-} from "../features/products/productSlice";
+import { type Product } from "../features/products/productSlice";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import { setSelectedBrands } from "../features/products/filterSlice";
+import { applyFilters } from "../features/products/thunks/filterThunks";
 
 const Brands = () => {
   const dispatch = useDispatch();
 
   const [limit, setLimit] = useState<number>(5);
   const [brands, setBrands] = useState<string[]>([]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const { selectedBrands } = useSelector((state: RootState) => state.filter);
 
   const { products } = useSelector((state: RootState) => state.products);
 
@@ -25,24 +23,14 @@ const Brands = () => {
   }, [products]);
 
   const handleBrand = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const brand = e.currentTarget.value;
-    const checked = e.currentTarget.checked;
+    const brand: string = e.currentTarget.value;
+    const checked: boolean = e.currentTarget.checked;
+    const updated = checked
+      ? [...selectedBrands, brand]
+      : selectedBrands.filter((b) => b !== brand);
 
-    setSelectedBrands((prev) => {
-      const updated = checked
-        ? [...prev, brand]
-        : prev.filter((b) => b !== brand);
-
-      const filtered: Product[] =
-        updated.length > 0
-          ? products?.filter((product) => updated.includes(product.brand))
-          : null;
-
-      dispatch(ClearFilterdProducts());
-      dispatch(AddFilteredProducts(filtered));
-
-      return updated;
-    });
+    dispatch(setSelectedBrands(updated));
+    dispatch(applyFilters());
   };
 
   const handleLimit = () => {

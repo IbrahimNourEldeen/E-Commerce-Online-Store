@@ -7,8 +7,11 @@ import HomeSidebar from "../components/HomeSidebar";
 import { GrNext, GrPrevious } from "react-icons/gr";
 
 const Home = () => {
-  const { products, filteredProducts } = useSelector(
+  const { products } = useSelector(
     (state: RootState) => state.products
+  );
+  const { filteredProducts } = useSelector(
+    (state: RootState) => state.filter
   );
   const dispatch = useDispatch<AppDispatch>();
 
@@ -25,7 +28,7 @@ const Home = () => {
     getData();
   }, [dispatch]);
 
-  const paginationData = (filteredProducts || products)?.slice(
+  const paginationData = (filteredProducts.length>0?filteredProducts : products)?.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -97,7 +100,7 @@ const [selectedImages, setSelectedImages] = useState<Record<number, number>>({})
       </div>
 
       <section className="w-full">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6  gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5  gap-4">
           {paginationData?.map((product, index) => (
             <div key={index} className="w-[170px] mx-auto text-center">
               <button className="cursor-pointer">

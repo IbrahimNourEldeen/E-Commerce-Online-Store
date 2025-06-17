@@ -1,8 +1,9 @@
 import { MdOutlineSearch } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../store/Store';
-import { AddFilteredProducts, type Product } from '../features/products/productSlice';
+import { type Product } from '../features/products/productSlice';
 import { useState } from 'react';
+import { AddFilteredProducts } from '../features/products/filterSlice';
 
 const SearchProducts = () => {
     const { products } = useSelector((state: RootState) => state.products);

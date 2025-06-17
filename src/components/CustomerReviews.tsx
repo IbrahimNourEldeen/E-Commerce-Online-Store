@@ -1,79 +1,17 @@
 import { IoStar, IoStarOutline } from "react-icons/io5";
-import {
-  AddFilteredProducts,
-  ClearFilterdProducts,
-  type Product,
-} from "../features/products/productSlice";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../store/Store";
-import type React from "react";
 
-type Review = {
-  rating: number;
-  comment: string;
-  date: string;
-  reviewerName: string;
-  reviewerEmail: string;
-};
+import { useDispatch } from "react-redux";
+import type React from "react";
+import { setSelectedReview } from "../features/products/filterSlice";
+import { applyFilters } from "../features/products/thunks/filterThunks";
 
 const CustomerReviews = () => {
   const dispatch = useDispatch();
-  const { products, filteredProducts } = useSelector(
-    (state: RootState) => state.products
-  );
-
-  const getAverageRating = (reviews: Review[]) => {
-    if (!reviews?.length) return 0;
-    const total = reviews.reduce((sum, r) => sum + r.rating, 0);
-    return total / reviews.length;
-  };
 
   const handleReviews = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    let filtered: Product[] = [];
-
-    switch (value) {
-      case "all":
-        dispatch(ClearFilterdProducts());
-        return;
-
-      case "up to four":
-        filtered =
-          (filteredProducts || products)?.filter((product) => {
-            const avg = getAverageRating(product.reviews);
-            return avg >= 4;
-          }) || [];
-        break;
-
-      case "up to three":
-        filtered =
-          (filteredProducts || products)?.filter((product) => {
-            const avg = getAverageRating(product.reviews);
-            return avg >= 3;
-          }) || [];
-        break;
-
-      case "up to two":
-        filtered =
-          (filteredProducts || products)?.filter((product) => {
-            const avg = getAverageRating(product.reviews);
-            return avg >= 2;
-          }) || [];
-        break;
-
-      case "up to one":
-        filtered =
-          (filteredProducts || products)?.filter((product) => {
-            const avg = getAverageRating(product.reviews);
-            return avg >= 1;
-          }) || [];
-        break;
-
-      default:
-        break;
-    }
-
-    dispatch(AddFilteredProducts(filtered));
+    dispatch(setSelectedReview(value));
+    dispatch(applyFilters());
   };
 
   const reviewsFields = [

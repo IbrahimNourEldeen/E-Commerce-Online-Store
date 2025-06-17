@@ -3,7 +3,7 @@ import axios from "axios";
 import { FiAlignJustify } from "react-icons/fi";
 import img from "../assets/fashion week.jpg";
 import { useDispatch } from "react-redux";
-import { AddFilteredProducts } from "../features/products/productSlice";
+import { AddFilteredProducts } from "../features/products/filterSlice";
 
 type CategoryProps = {
   toggle: () => void;
