@@ -6,6 +6,8 @@ import { IoStar, IoStarOutline } from "react-icons/io5";
 import { GoShieldCheck } from "react-icons/go";
 import { TbTruckDelivery } from "react-icons/tb";
 
+import user from "../assets/default.png";
+
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<Product>();
@@ -26,14 +28,14 @@ const ProductDetails = () => {
 
   return (
     <div className=" pt-10">
-      <div className="grid grid-cols-9 w-[92%] mx-auto">
-        <div className="col-span-3">
+      <div className="grid grid-cols-1 lg:grid-cols-9 md:grid-cols-6 w-[92%] mx-auto border-b border-b-gray-400">
+        <div className="lg:col-span-3 md:col-span-3">
           <div className="">
             <img src={product?.images[0]} alt="" />
           </div>
         </div>
 
-        <div className="col-span-4">
+        <div className="col-span-1 lg:col-span-4 md:col-span-3">
           <h2 className="text-3xl pe-5">{product?.description}</h2>
           <p className="text-yellow-600 flex items-center me-5 border-b border-b-gray-400">
             <span className="text-black me-2">
@@ -122,7 +124,7 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        <div className="col-span-2">
+        <div className="col-span-1 lg:col-span-2 md:col-span-full">
           <div className="rounded-md border p-4 mb-3">
             <img
               src="https://m.media-amazon.com/images/G/42/marketing/prime/2022PrimeBrand/Logos/Prime_Logo_RGB_Prime_Blue_MASTER._CB542735200_.png"
@@ -167,7 +169,29 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
-      <div className=""></div>
+      <div className=" mt-10 flex flex-col items-center ">
+        <h2 className="text-2xl font-bold">Top reviews</h2>
+        {product?.reviews.map((review, index) => (
+          <div className="w-[50%] my-5">
+            <p className="flex">
+              <img src={user} className="w-[30px] me-2" alt="" />
+              {review.reviewerName}
+            </p>
+
+            <div className="text-yellow-600 flex items-center">
+              {[...Array(5)].map((_, index) =>
+                index < Math.round(review.rating) ? (
+                  <IoStar key={index} />
+                ) : (
+                  <IoStarOutline key={index} />
+                )
+              )}
+            </div>
+            <p className="">{review.comment}</p>
+            <button>Report</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
