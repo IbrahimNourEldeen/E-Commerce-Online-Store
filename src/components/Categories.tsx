@@ -4,25 +4,26 @@ import { FiAlignJustify } from "react-icons/fi";
 import img from "../assets/fashion week.jpg";
 import { useDispatch } from "react-redux";
 import { AddFilteredProducts } from "../features/products/filterSlice";
+import { useNavigate } from "react-router-dom";
 
 type CategoryProps = {
   toggle: () => void;
 };
 type Categories = {
-  name:string;
-  slug:string;
-}
+  name: string;
+  slug: string;
+};
 const Categories = ({ toggle }: CategoryProps) => {
-
   const [categories, setCategories] = useState<Categories[]>([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const getCategories = async () => {
       try {
-        const { data } = await axios.get("https://dummyjson.com/products/categories");
+        const { data } = await axios.get(
+          "https://dummyjson.com/products/categories"
+        );
         setCategories(data.slice(0, 5));
-        console.log(data)
       } catch (error) {
         console.error("Failed to fetch categories", error);
       }
@@ -30,9 +31,13 @@ const Categories = ({ toggle }: CategoryProps) => {
     getCategories();
   }, []);
 
+  const navigate = useNavigate();
   const handleClick = async (name: string) => {
     try {
-      const { data } = await axios.get(`https://dummyjson.com/products/category/${name}`);
+      navigate("/");
+      const { data } = await axios.get(
+        `https://dummyjson.com/products/category/${name}`
+      );
       dispatch(AddFilteredProducts(data.products));
     } catch (error) {
       console.error("Failed to fetch category products", error);
@@ -48,7 +53,7 @@ const Categories = ({ toggle }: CategoryProps) => {
             All
           </button>
         </li>
-        {categories?.map((category,index) => (
+        {categories?.map((category, index) => (
           <li key={index} className="grow text-center">
             <button
               className="cursor-pointer capitalize"

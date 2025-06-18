@@ -1,0 +1,175 @@
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import type { Product } from "../features/products/productSlice";
+import { IoStar, IoStarOutline } from "react-icons/io5";
+import { GoShieldCheck } from "react-icons/go";
+import { TbTruckDelivery } from "react-icons/tb";
+
+const ProductDetails = () => {
+  const { id } = useParams();
+  const [product, setProduct] = useState<Product>();
+
+  useEffect(() => {
+    const getProduct = async () => {
+      const { data } = await axios.get(`https://dummyjson.com/products/${id}`);
+      setProduct(data);
+      console.log(product);
+    };
+    getProduct();
+  }, []);
+  const getAverageRating = (reviews) => {
+    if (!reviews?.length) return 0;
+    const total = reviews.reduce((sum, r) => sum + r.rating, 0);
+    return total / reviews.length;
+  };
+
+  return (
+    <div className=" pt-10">
+      <div className="grid grid-cols-9 w-[92%] mx-auto">
+        <div className="col-span-3">
+          <div className="">
+            <img src={product?.images[0]} alt="" />
+          </div>
+        </div>
+
+        <div className="col-span-4">
+          <h2 className="text-3xl pe-5">{product?.description}</h2>
+          <p className="text-yellow-600 flex items-center me-5 border-b border-b-gray-400">
+            <span className="text-black me-2">
+              {getAverageRating(product?.reviews).toFixed(1)}
+            </span>
+            {[...Array(5)].map((_, index) =>
+              index < Math.round(getAverageRating(product?.reviews)) ? (
+                <IoStar key={index} />
+              ) : (
+                <IoStarOutline key={index} />
+              )
+            )}
+            <span className="text-blue-500 ms-2">
+              {product?.reviews.length}{" "}
+              {product?.reviews.length === 1 ? "rating" : "ratings"}
+            </span>
+          </p>
+
+          <span className=" bg-red-700 text-sm font-semibold p-1 inline-block mt-1 text-white rounded">
+            Limited time deal
+          </span>
+          <div className="flex items-center">
+            <span className="text-red-600 text-2xl font-extralight me-3">
+              -{product?.discountPercentage}%
+            </span>
+            <p className="text-3xl text-green-600">
+              <sup className="text-sm">EGP</sup>
+              {product?.price}
+            </p>
+          </div>
+          <p className="">
+            List Price:
+            <span className="ms-2 text-gray-700 line-through">
+              EGP{" "}
+              {(
+                product?.price *
+                (1 + product?.discountPercentage / 100)
+              ).toFixed(2)}
+            </span>
+          </p>
+          <div className="flex py-3 gap-x-3  me-5 border-b border-b-gray-400">
+            <div className="">
+              <img
+                src="https://m.media-amazon.com/images/G/42/A2I-Convert/mobile/IconFarm/icon-warranty._CB403797073_.png"
+                className="w-[50px] mx-auto"
+                alt=""
+              />
+              <h5 className="text-blue-900">{product?.warrantyInformation}</h5>
+            </div>
+            <div className="">
+              <img
+                src="https://m.media-amazon.com/images/G/42/A2I-Convert/mobile/IconFarm/icon-amazon-delivered._CB403797073_.png"
+                className="w-[50px] mx-auto"
+                alt=""
+              />
+              <h5 className="text-blue-900">{product?.shippingInformation}</h5>
+            </div>
+            <div className="">
+              <img
+                src="https://m.media-amazon.com/images/G/42/A2I-Convert/mobile/IconFarm/icon-returns._CB403797073_.png"
+                className="w-[50px] mx-auto"
+                alt=""
+              />
+              <h5 className="text-blue-900">{product?.returnPolicy}</h5>
+            </div>
+            <div className="">
+              <img
+                src="https://m.media-amazon.com/images/G/42/A2I-Convert/mobile/IconFarm/icon-secure-transaction._CB414468582_.png"
+                className="w-[50px] mx-auto"
+                alt=""
+              />
+              <h5 className="text-blue-900">{product?.availabilityStatus}</h5>
+            </div>
+          </div>
+          <div className="flex gap-x-1 py-3">
+            <div>
+              <h5 className="font-bold">Style:</h5>
+              <h5 className="font-bold">Weight:</h5>
+              <h5 className="font-bold">Brand Name:</h5>
+            </div>
+            <div className="">
+              <p className="">{product?.sku}</p>
+              <p className="">{product?.weight}g</p>
+              <p className="">{product?.brand}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-span-2">
+          <div className="rounded-md border p-4 mb-3">
+            <img
+              src="https://m.media-amazon.com/images/G/42/marketing/prime/2022PrimeBrand/Logos/Prime_Logo_RGB_Prime_Blue_MASTER._CB542735200_.png"
+              className="w-[70px]"
+              alt=""
+            />
+            <p className="">
+              Enjoy fast, free delivery, exclusive deals, and award-winning
+              movies and TV shows.
+            </p>
+            <a href="" className="hover:text-red-400">
+              Join Prime
+            </a>
+          </div>
+          <div className="rounded-md border p-4">
+            <p className="text-3xl">
+              <sup className="text-sm">EGP</sup>
+              {product?.price}
+            </p>
+
+            <h3 className="text-green-600 font-semibold">In Stock</h3>
+            <div className="relative">
+              <span className=" absolute top-4 start-3">Quantity : </span>
+              <select
+                name="quantity"
+                id=""
+                className="w-full py-2 ps-20 rounded-md bg-gray-200 my-2"
+              >
+                {[...Array(product?.stock || 1)].map((_, index) => (
+                  <option key={index} value={index + 1}>
+                    {index + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <button className="w-full bg-amber-300  py-2 rounded-3xl my-2">
+              Add To Cart
+            </button>
+            <button className="w-full bg-amber-500  py-2 rounded-3xl">
+              Buy Now
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className=""></div>
+    </div>
+  );
+};
+
+export default ProductDetails;

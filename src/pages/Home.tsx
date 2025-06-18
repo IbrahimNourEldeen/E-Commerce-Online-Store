@@ -5,14 +5,11 @@ import axios from "axios";
 import { AddProducts } from "../features/products/productSlice";
 import HomeSidebar from "../components/HomeSidebar";
 import { GrNext, GrPrevious } from "react-icons/gr";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { products } = useSelector(
-    (state: RootState) => state.products
-  );
-  const { filteredProducts } = useSelector(
-    (state: RootState) => state.filter
-  );
+  const { products } = useSelector((state: RootState) => state.products);
+  const { filteredProducts } = useSelector((state: RootState) => state.filter);
   const dispatch = useDispatch<AppDispatch>();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -28,10 +25,9 @@ const Home = () => {
     getData();
   }, [dispatch]);
 
-  const paginationData = (filteredProducts.length>0?filteredProducts : products)?.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const paginationData = (
+    filteredProducts.length > 0 ? filteredProducts : products
+  )?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const totalProducts: number = (filteredProducts || products)?.length || 0;
   const totalPages: number = Math.ceil(totalProducts / itemsPerPage);
@@ -84,13 +80,20 @@ const Home = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [offsetTop]);
 
-const [selectedImages, setSelectedImages] = useState<Record<number, number>>({});
+  const [selectedImages, setSelectedImages] = useState<Record<number, number>>(
+    {}
+  );
+
+  const navigate = useNavigate();
+  const handleNavigate = (id: number) => {
+    navigate(`/${id}`);
+  };
 
   return (
     <div className="flex">
       <div className="hidden md:block w-[250px] bg-white h-screen">
         <div
-          className={`transition-all duration-300 w-[100%] z-50 h-full overflow-y-auto hide-scrollbar ${
+          className={`transition-all duration-300 w-[100%] z-40 h-full overflow-y-auto hide-scrollbar ${
             isFixed ? "fixed top-0 left-0" : "relative"
           }`}
           ref={elementRef}
@@ -99,32 +102,33 @@ const [selectedImages, setSelectedImages] = useState<Record<number, number>>({})
         </div>
       </div>
 
-      <section className="w-full">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5  gap-4">
+      <section className="w-full z-50 pt-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6  gap-4">
           {paginationData?.map((product, index) => (
             <div key={index} className="w-[170px] mx-auto text-center">
-              <button className="cursor-pointer">
+              <button
+                className="cursor-pointer"
+                onClick={() => handleNavigate(product.id)}
+              >
                 <img
-                  src={
-                    product.images[
-                      selectedImages[index]?? 0
-                    ]
-                  }
-                  className="w-full h-auto object-cover mb-2 bg-[#f7f8f8]"
+                  src={product.images[selectedImages[index] ?? 0]}
+                  className="w-full h-auto object-cover mb-2 bg-[#f7f8f8] rounded"
                   alt={product.title}
                 />
                 <div className=" text-red-700 text-sm font-semibold">
                   <span className="bg-red-700 text-white rounded p-1">
-                    15% off
+                    {product.discountPercentage}% off
                   </span>{" "}
                   Limited time deal
                 </div>
-                <h4 className="text-sm font-medium">{product.title}</h4>
+                <h4 className="text-sm font-medium hover:text-yellow-600">
+                  {product.title}
+                </h4>
               </button>
 
               <div className="flex gap-x-2 justify-center mt-2">
                 {product.images.length > 1 &&
-                  product.images.map((image, i) => (
+                  product.images.map((_, i) => (
                     <div
                       key={i}
                       onClick={() =>
@@ -134,8 +138,10 @@ const [selectedImages, setSelectedImages] = useState<Record<number, number>>({})
                         }))
                       }
                       className={`w-[20px] h-[20px] rounded-full cursor-pointer ${
-  selectedImages[index] === i ? "bg-green-500" : "bg-gray-300"
-}`}
+                        selectedImages[index] === i
+                          ? "bg-green-500"
+                          : "bg-gray-300"
+                      }`}
                     ></div>
                   ))}
               </div>
