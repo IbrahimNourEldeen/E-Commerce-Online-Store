@@ -54,7 +54,7 @@ const Navbar = () => {
 
               <button className="mx-2 font-bold  block">Orders</button>
               <div className="relative">
-                <button className="text-2xl translate-1 text-orange-600 bg-orange-100 p-2 rounded-full"> <FaOpencart /> </button>
+                <button className="text-2xl translate-1 text-orange-600 bg-orange-100 p-2 rounded-full"><Link to="/cart"> <FaOpencart /></Link> </button>
                 <span className="absolute right-1 text-white bg-orange-600 rounded-full px-1 text-xs">1</span>
               </div>
             </div>

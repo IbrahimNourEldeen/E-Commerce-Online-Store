@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import type { Product } from "../features/products/productSlice";
 import { IoStar, IoStarOutline } from "react-icons/io5";
-import { GoShieldCheck } from "react-icons/go";
-import { TbTruckDelivery } from "react-icons/tb";
 
 import user from "../assets/default.png";
 
@@ -25,6 +23,34 @@ const ProductDetails = () => {
     const total = reviews.reduce((sum, r) => sum + r.rating, 0);
     return total / reviews.length;
   };
+
+  const handleCart = (id: number) => {
+  try {
+    const cartStr = localStorage.getItem("cart");
+
+    // لو فيه قيمة وحاولنا نعمل parse
+    let cart: number[] = [];
+
+    if (cartStr) {
+      const parsed = JSON.parse(cartStr);
+      // نتأكد إنه فعلاً مصفوفة
+      if (Array.isArray(parsed)) {
+        cart = parsed;
+      }
+    }
+
+    // نضيف الـ id
+    cart.push(id);
+
+    // نحفظ من جديد
+    localStorage.setItem("cart", JSON.stringify(cart));
+  } catch (error) {
+    console.error("Error accessing cart in localStorage:", error);
+    // نبدأ مصفوفة جديدة في حالة وجود خطأ
+    localStorage.setItem("cart", JSON.stringify([id]));
+  }
+};
+
 
   return (
     <div className=" pt-10">
@@ -152,6 +178,7 @@ const ProductDetails = () => {
                 name="quantity"
                 id=""
                 className="w-full py-2 ps-20 rounded-md bg-gray-200 my-2"
+                
               >
                 {[...Array(product?.stock || 1)].map((_, index) => (
                   <option key={index} value={index + 1}>
@@ -160,7 +187,10 @@ const ProductDetails = () => {
                 ))}
               </select>
             </div>
-            <button className="w-full bg-amber-300  py-2 rounded-3xl my-2">
+            <button
+              className="w-full bg-amber-300  py-2 rounded-3xl my-2"
+              onClick={()=>handleCart(id)}
+            >
               Add To Cart
             </button>
             <button className="w-full bg-amber-500  py-2 rounded-3xl">
