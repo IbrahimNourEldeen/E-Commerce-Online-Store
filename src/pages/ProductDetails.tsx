@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import type { Product } from "../features/products/productSlice";
 import { IoStar, IoStarOutline } from "react-icons/io5";
+import Cookies from "js-cookie";
 
 import user from "../assets/default.png";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState<Product>();
+  const [amount, setAmount] = useState<number>(1);
 
   useEffect(() => {
     const getProduct = async () => {
@@ -24,33 +26,38 @@ const ProductDetails = () => {
     return total / reviews.length;
   };
 
-  const handleCart = (id: number) => {
-  try {
-    const cartStr = localStorage.getItem("cart");
+  const handleAmount = (a: number) => {
+    setAmount(a);
+  };
 
-    // لو فيه قيمة وحاولنا نعمل parse
-    let cart: number[] = [];
 
-    if (cartStr) {
-      const parsed = JSON.parse(cartStr);
-      // نتأكد إنه فعلاً مصفوفة
-      if (Array.isArray(parsed)) {
-        cart = parsed;
+  const handleCart = (product, amount: number) => {
+    try {
+      const cartStr = Cookies.get("cartProducts");
+
+      let productsInCart = [];
+
+      if (cartStr) {
+        productsInCart = JSON.parse(cartStr);
       }
+
+      const found = productsInCart.find((p) => p.id === product.id);
+
+      if (found) {
+        productsInCart.forEach((p) => {
+          if (p.id === product.id) p.amount =Number(p.amount)+Number(amount);
+        });
+      } else {
+        productsInCart.push({ ...product, amount });
+      }
+
+      Cookies.set("cartProducts", JSON.stringify(productsInCart), {
+        expires: 15,
+      });
+    } catch (error) {
+      console.error("Error accessing cart in cookies:", error);
     }
-
-    // نضيف الـ id
-    cart.push(id);
-
-    // نحفظ من جديد
-    localStorage.setItem("cart", JSON.stringify(cart));
-  } catch (error) {
-    console.error("Error accessing cart in localStorage:", error);
-    // نبدأ مصفوفة جديدة في حالة وجود خطأ
-    localStorage.setItem("cart", JSON.stringify([id]));
-  }
-};
-
+  };
 
   return (
     <div className=" pt-10">
@@ -178,7 +185,7 @@ const ProductDetails = () => {
                 name="quantity"
                 id=""
                 className="w-full py-2 ps-20 rounded-md bg-gray-200 my-2"
-                
+                onChange={(e) => handleAmount(e.target.value)}
               >
                 {[...Array(product?.stock || 1)].map((_, index) => (
                   <option key={index} value={index + 1}>
@@ -189,7 +196,7 @@ const ProductDetails = () => {
             </div>
             <button
               className="w-full bg-amber-300  py-2 rounded-3xl my-2"
-              onClick={()=>handleCart(id)}
+              onClick={() => handleCart(product, amount)}
             >
               Add To Cart
             </button>
