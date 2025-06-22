@@ -16,7 +16,6 @@ const ProductDetails = () => {
     const getProduct = async () => {
       const { data } = await axios.get(`https://dummyjson.com/products/${id}`);
       setProduct(data);
-      console.log(product);
     };
     getProduct();
   }, []);
@@ -195,12 +194,12 @@ const ProductDetails = () => {
               </select>
             </div>
             <button
-              className="w-full bg-amber-300  py-2 rounded-3xl my-2"
+              className="w-full bg-amber-300  py-2 rounded-3xl my-2 cursor-pointer hover:bg-[#f9c700]"
               onClick={() => handleCart(product, amount)}
             >
               Add To Cart
             </button>
-            <button className="w-full bg-amber-500  py-2 rounded-3xl">
+            <button className="w-full bg-amber-500  py-2 rounded-3xl cursor-pointer hover:bg-[#ff9d00]">
               Buy Now
             </button>
           </div>

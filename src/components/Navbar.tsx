@@ -5,13 +5,29 @@ import { TiLocationOutline } from "react-icons/ti"
 import SearchProducts from "./SearchProducts"
 import { FiAlignJustify } from "react-icons/fi"
 import Categories from "./Categories"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import Cookies from "js-cookie"
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const toggleSideBar= () => {
     setIsOpen(!isOpen)
   }
+
+  const [cartLength, setCartLength] = useState(0);
+  
+    useEffect(() => {
+      const cartStr = Cookies.get("cartProducts");
+      let productsInCart = [];
+  
+      if (cartStr) {
+        productsInCart = JSON.parse(cartStr);
+      }
+  
+      setCartLength(productsInCart.length);
+    }, []);
+    
   return (
     <div className="relative">
       <nav className="bg-blue-50 shadow md:overflow-x-auto hide-scrollbar">
@@ -55,7 +71,7 @@ const Navbar = () => {
               <button className="mx-2 font-bold  block">Orders</button>
               <div className="relative">
                 <button className="text-2xl translate-1 text-orange-600 bg-orange-100 p-2 rounded-full"><Link to="/cart"> <FaOpencart /></Link> </button>
-                <span className="absolute right-1 text-white bg-orange-600 rounded-full px-1 text-xs">1</span>
+                <span className="absolute right-1 text-white bg-orange-600 rounded-full px-1 text-xs">{cartLength}</span>
               </div>
             </div>
           </div>
@@ -79,7 +95,7 @@ const Navbar = () => {
                 </button>
                 <div className="relative cursor-pointer">
                   <button className="text-2xl translate-1 cursor-pointer text-orange-600 bg-orange-100 p-2 rounded-full"> <FaOpencart /> </button>
-                  <span className="absolute right-1 text-white bg-orange-600 rounded-full px-1 text-xs">1</span>
+                  <span className="absolute right-1 text-white bg-orange-600 rounded-full px-1 text-xs">{cartLength}</span>
                 </div>
               </div>
             </div>
