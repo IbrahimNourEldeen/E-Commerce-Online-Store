@@ -6,6 +6,7 @@ import { AddProducts } from "../features/products/productSlice";
 import HomeSidebar from "../components/HomeSidebar";
 import { GrNext, GrPrevious } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import { AddFilteredProducts } from "../features/products/filterSlice";
 
 const Home = () => {
   const { products } = useSelector((state: RootState) => state.products);
@@ -21,6 +22,7 @@ const Home = () => {
         `https://dummyjson.com/products?limit=100`
       );
       dispatch(AddProducts(data.products));
+      dispatch(AddFilteredProducts(data.products));
     };
     getData();
   }, [dispatch]);

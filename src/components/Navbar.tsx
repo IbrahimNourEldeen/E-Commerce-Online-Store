@@ -6,8 +6,6 @@ import SearchProducts from "./SearchProducts"
 import { FiAlignJustify } from "react-icons/fi"
 import Categories from "./Categories"
 import { useEffect, useState } from "react"
-import Cookies from "js-cookie"
-
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
@@ -18,7 +16,7 @@ const Navbar = () => {
   const [cartLength, setCartLength] = useState(0);
   
     useEffect(() => {
-      const cartStr = Cookies.get("cartProducts");
+      const cartStr = localStorage.getItem("cartProducts");
       let productsInCart = [];
   
       if (cartStr) {

@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import type { Product } from "../features/products/productSlice";
 import { IoStar, IoStarOutline } from "react-icons/io5";
-import Cookies from "js-cookie";
-
 import user from "../assets/default.png";
 
 const ProductDetails = () => {
@@ -32,7 +30,7 @@ const ProductDetails = () => {
 
   const handleCart = (product, amount: number) => {
     try {
-      const cartStr = Cookies.get("cartProducts");
+      const cartStr = localStorage.getItem("cartProducts");
 
       let productsInCart = [];
 
@@ -50,9 +48,7 @@ const ProductDetails = () => {
         productsInCart.push({ ...product, amount });
       }
 
-      Cookies.set("cartProducts", JSON.stringify(productsInCart), {
-        expires: 15,
-      });
+      localStorage.setItem("cartProducts", JSON.stringify(productsInCart));
     } catch (error) {
       console.error("Error accessing cart in cookies:", error);
     }

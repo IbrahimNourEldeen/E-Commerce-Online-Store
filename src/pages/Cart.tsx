@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import Cookies from "js-cookie";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 const Cart = () => {
   const [cartProducts, setCartProducts] = useState<any[]>([]);
 
   useEffect(() => {
-    const cartStr = Cookies.get("cartProducts");
+    const cartStr = localStorage.getItem("cartProducts");
     let productsInCart = [];
 
     if (cartStr) {
@@ -16,8 +15,8 @@ const Cart = () => {
     setCartProducts(productsInCart);
   }, []);
 
-  const updateCookies = (products: any[]) => {
-    Cookies.set("cartProducts", JSON.stringify(products));
+  const updateLocalStorage = (products: any[]) => {
+    localStorage.setItem("cartProducts", JSON.stringify(products));
   };
 
   const handleAmountChange = (id: number, type: "inc" | "dec") => {
@@ -32,7 +31,7 @@ const Cart = () => {
     });
 
     setCartProducts(updated);
-    updateCookies(updated);
+    updateLocalStorage(updated);
   };
 
   const subtotal = cartProducts.reduce((acc, product) => {
@@ -46,7 +45,7 @@ const Cart = () => {
   const handleDelete = (id:number) =>{
     const updated = cartProducts.filter((product) => product.id !==id )
     setCartProducts(updated);
-    updateCookies(updated);
+    updateLocalStorage(updated);
   }
 
   return (
