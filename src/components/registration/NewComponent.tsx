@@ -3,9 +3,10 @@ import React from "react";
 interface NewProps {
   phone: string;
   country: string;
+  setFormNumber:(value: number) => void;
 }
 
-const NewComponent:React.FC<NewProps> = ({country, phone}) => {
+const NewComponent:React.FC<NewProps> = ({country, phone, setFormNumber}) => {
     const handleSubmit = () => {
 
     }
@@ -17,8 +18,8 @@ const NewComponent:React.FC<NewProps> = ({country, phone}) => {
       <form action="" className="" onSubmit={handleSubmit}>
         <div className="max-w-sm mx-auto">
             <div className="">
-                <span className="">{country} {phone}</span>
-                <button className="text-blue-600 hover:text-blue-800 cursor-pointer">Change</button>
+                <span className="">{country}{phone}</span>
+                <button className="text-blue-600 hover:text-blue-800 cursor-pointer ms-2" onClick={()=>setFormNumber(1)}>Change</button>
             </div>
             <p className="">Let's create an acount using your mobile number</p>
         </div>
@@ -31,7 +32,7 @@ const NewComponent:React.FC<NewProps> = ({country, phone}) => {
           <p className=" font-semibold">
             Already a customer?
           </p>
-          <button className=" my-2 text-blue-500 hover:underline hover:text-blue-800 font-semibold">
+          <button className=" my-2 text-blue-500 hover:underline hover:text-blue-800 font-semibold" onClick={()=>setFormNumber(1)}>
             Sign in with another mobile
           </button>
         </div>

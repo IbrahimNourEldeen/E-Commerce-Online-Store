@@ -2,6 +2,7 @@ import { useState } from "react";
 import icon from "../assets/icon.png";
 import Signin from "../components/registration/Signin";
 import NewComponent from "../components/registration/NewComponent";
+import CreateAcountComponent from "../components/registration/CreateAcountComponent";
 
 const users = [
   {
@@ -12,9 +13,11 @@ const users = [
 ];
 
 const Login = () => {
-  
-  const [formNumber, setFormNumber] = useState(2);
-  const [country, setCountry] = useState("EG +2");
+  const [name, setName] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [rePassword, setRePassword] = useState<string>("");
+  const [formNumber, setFormNumber] = useState<number>(3);
+  const [country, setCountry] = useState<string>("EG +2");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -34,20 +37,24 @@ const Login = () => {
     }
   };
   return (
-    <div className="h-screen">
-      <div className="h-[60%] flex items-center flex-col">
+    <div className="min-h-[100vh]">
+      <div className="min-h-[60%] flex items-center flex-col">
         <div className="">
           <img src={icon} alt="" className="w-[200px]" />
         </div>
         {
           formNumber==1?(
             <Signin handleSubmit ={handleSubmit} error={error} setError={setError} phone={phone} setPhone= {setPhone} country = {country} setCountry = {setCountry}/>
-          ):formNumber==2?(<NewComponent country = {country} phone={phone}/>):""
+          ):formNumber==2?(
+            <NewComponent country = {country} phone={phone} setFormNumber={setFormNumber}/>
+          ):formNumber==3?(
+            <CreateAcountComponent handleSubmit ={handleSubmit} error={error} setError={setError} phone={phone} setPhone= {setPhone} country = {country} setCountry = {setCountry} name={name} setName={setName} password={password} setPassword={setPassword} rePassword={rePassword} setRePassword={setRePassword}/>
+          ):""
 
         }
       </div>
 
-      <div className="h-40% border-t-2 border-gray-300 text-sm p-5">
+      <div className="max-h-40% border-t-2 border-gray-300 text-sm p-5">
         <ul className="flex justify-center gap-x-3 text-blue-800">
           <li className="">
             <a href="" className="">
