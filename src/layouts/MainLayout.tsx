@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import Login from "../pages/Login";
 
 const MainLayout = () => {
-  const isRigisterd: boolean = true;
+  const isRigisterd: boolean = false;
   return isRigisterd ? (
     <>
       <Navbar />
