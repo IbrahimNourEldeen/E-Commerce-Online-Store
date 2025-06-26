@@ -3,8 +3,18 @@ import { IoIosAlert } from "react-icons/io";
 
 interface SigninProps {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  error: string | null;
-  setError: (value: string | null) => void;
+  errorCreation: {
+    phone: string | null;
+    name: string | null;
+    password: string | null;
+    rePassword: string | null;
+  };
+  setErrorCreation: (value: {
+    phone: string | null;
+    name: string | null;
+    password: string | null;
+    rePassword: string | null;
+  }) => void;
   phone: string;
   setPhone: (value: string) => void;
   country: string;
@@ -19,8 +29,6 @@ interface SigninProps {
 
 const CreateAcountComponent: React.FC<SigninProps> = ({
   handleSubmit,
-  error,
-  setError,
   phone,
   setPhone,
   country,
@@ -31,6 +39,8 @@ const CreateAcountComponent: React.FC<SigninProps> = ({
   setPassword,
   rePassword,
   setRePassword,
+  errorCreation,
+  setErrorCreation,
 }) => {
   return (
     <div className="my-5 p-5 border border-gray-300 rounded-md w-[25%]">
@@ -71,30 +81,22 @@ const CreateAcountComponent: React.FC<SigninProps> = ({
               type="tel"
               value={phone}
               onChange={(e) => {
-                setError("");
+                setErrorCreation({ ...errorCreation, phone: null });
                 setPhone(e.target.value);
               }}
               placeholder="Mobile Number"
-              //   className="ml-4 flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-400 text-sm "
-              className={`flex items-center w-full border-gray-300 shadow-sm rounded-md px-3 py-1 ${
-                error ? "border-2 border-red-600" : "border-1 border-gray-500"
+              className={`flex items-center w-full border-gray-300 outline-none shadow-sm rounded-md px-3 py-1 ${
+                errorCreation.phone
+                  ? "border-2 border-red-600"
+                  : "border-1 border-gray-500"
               }`}
             />
-            {phone?.length > 0 ? (
-              <button onClick={() => setPhone("")} className="font-bold">
-                X
-              </button>
-            ) : (
-              ""
-            )}
           </div>
-          {error ? (
-            <span className="text-red-700">
-              <IoIosAlert className="inline-block me-1 text-xl " />
-              {error}
+          {errorCreation.phone && (
+            <span className="text-red-700 text-sm mt-1 block">
+              <IoIosAlert className="inline-block me-1 text-xl align-middle" />
+              {errorCreation.phone}
             </span>
-          ) : (
-            ""
           )}
         </div>
         <div className="max-w-sm mx-auto mt-4">
@@ -105,14 +107,22 @@ const CreateAcountComponent: React.FC<SigninProps> = ({
             type="text"
             value={name}
             onChange={(e) => {
-              setError("");
+              setErrorCreation({ ...errorCreation, name: null });
               setName(e.target.value);
             }}
             placeholder="First and last name"
             className={`flex outline-none w-full items-center text-gray-700 placeholder-gray-400 border-gray-300 rounded-md px-3 py-1  shadow-sm ${
-              error ? "border-2 border-red-600" : "border-1 border-gray-500"
+              errorCreation.name
+                ? "border-2 border-red-600"
+                : "border-1 border-gray-500"
             }`}
           />
+          {errorCreation.name && (
+            <span className="text-red-700 text-sm mt-1 block">
+              <IoIosAlert className="inline-block me-1 text-xl align-middle" />
+              {errorCreation.name}
+            </span>
+          )}
         </div>
         <div className="max-w-sm mx-auto mt-4">
           <label className="block text-sm font-bold text-gray-700 mb-1">
@@ -122,13 +132,21 @@ const CreateAcountComponent: React.FC<SigninProps> = ({
             type="password"
             value={password}
             onChange={(e) => {
-              setError("");
+              setErrorCreation({ ...errorCreation, password: null });
               setPassword(e.target.value);
             }}
             className={`flex outline-none w-full items-center text-gray-700 placeholder-gray-400 border-gray-300 rounded-md px-3 py-1 shadow-sm ${
-              error ? "border-2 border-red-600" : "border-1 border-gray-500"
+              errorCreation.password
+                ? "border-2 border-red-600"
+                : "border-1 border-gray-500"
             }`}
           />
+          {errorCreation.password && (
+            <span className="text-red-700 text-sm mt-1 block">
+              <IoIosAlert className="inline-block me-1 text-xl align-middle" />
+              {errorCreation.password}
+            </span>
+          )}
         </div>
         <div className="max-w-sm mx-auto mt-4">
           <label className="block text-sm font-bold text-gray-700 mb-1">
@@ -138,13 +156,21 @@ const CreateAcountComponent: React.FC<SigninProps> = ({
             type="password"
             value={rePassword}
             onChange={(e) => {
-              setError("");
+              setErrorCreation({ ...errorCreation, rePassword: null });
               setRePassword(e.target.value);
             }}
             className={`flex outline-none w-full items-center text-gray-700 placeholder-gray-400 border-gray-300 rounded-md px-3 py-1 shadow-sm ${
-              error ? "border-2 border-red-600" : "border-1 border-gray-500"
+              errorCreation.rePassword
+                ? "border-2 border-red-600"
+                : "border-1 border-gray-500"
             }`}
           />
+          {errorCreation.rePassword && (
+            <span className="text-red-700 text-sm mt-1 block">
+              <IoIosAlert className="inline-block me-1 text-xl align-middle" />
+              {errorCreation.rePassword}
+            </span>
+          )}
         </div>
         <p className="text-sm my-4">
           To verify your number, we will send you a text message with a

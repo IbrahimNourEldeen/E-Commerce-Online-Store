@@ -8,7 +8,7 @@ interface NewProps {
 
 const NewComponent:React.FC<NewProps> = ({country, phone, setFormNumber}) => {
     const handleSubmit = () => {
-
+      setFormNumber(3)
     }
   return (
     <div className="mt-5 p-5 border border-gray-300 rounded-md w-[25%]">
