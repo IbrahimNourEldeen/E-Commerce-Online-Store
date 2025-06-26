@@ -155,7 +155,7 @@ const Login = () => {
             setRePassword={setRePassword}
           />
         ) : formNumber == 4 ? (
-          <VerifyingMessage />
+          <VerifyingMessage setFormNumber={setFormNumber} phone={phone}/>
         ) : (
           ""
         )}
