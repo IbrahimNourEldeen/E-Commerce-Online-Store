@@ -21,6 +21,7 @@ const Login = () => {
   const [country, setCountry] = useState<string>("EG +2");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [logedIn, setLogedIn] = useState<boolean>(false);
 
   const [errorCreation, setErrorCreation] = useState<{
     phone: string | null;
@@ -155,7 +156,7 @@ const Login = () => {
             setRePassword={setRePassword}
           />
         ) : formNumber == 4 ? (
-          <VerifyingMessage setFormNumber={setFormNumber} phone={phone}/>
+          <VerifyingMessage setFormNumber={setFormNumber} phone={phone} country={country} setLogedIn={setLogedIn}/>
         ) : (
           ""
         )}
