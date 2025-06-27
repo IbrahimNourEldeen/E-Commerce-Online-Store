@@ -42,12 +42,10 @@ const VerifyingMessage: React.FC<NewProps> = ({
     sendVerificationCode(phone);
   };
 
-  // const navigate = useNavigate();
   const handleOtpSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (otp === sentCode) {
       setLogedIn(true);
-      // navigate('/',{replace:true})
     } else {
       setError("Invalid OTP code. Please try again.");
     }

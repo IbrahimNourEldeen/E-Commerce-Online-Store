@@ -4,6 +4,8 @@ import Signin from "../components/registration/Signin";
 import NewComponent from "../components/registration/NewComponent";
 import CreateAcountComponent from "../components/registration/CreateAcountComponent";
 import VerifyingMessage from "../components/registration/VerifyingMessage";
+import { LoginUser } from "../features/users/userSlice";
+import { useDispatch } from "react-redux";
 
 const users = [
   {
@@ -14,6 +16,8 @@ const users = [
 ];
 
 const Login = () => {
+  const dispatch = useDispatch();
+
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [rePassword, setRePassword] = useState<string>("");
@@ -114,6 +118,10 @@ const Login = () => {
       if (allValid) {
         setFormNumber(4);
       }
+    }
+
+    if(logedIn){
+      dispatch(LoginUser(name, phone, password))
     }
   };
 
