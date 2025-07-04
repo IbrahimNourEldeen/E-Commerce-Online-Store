@@ -69,7 +69,7 @@ export const applyFilters = createAsyncThunk<Product[], void, { state: RootState
     }
 
     switch (selectedDiscount) {
-      case "10% off or more":
+      case "10% off or less":
         filtered = filtered.filter((product) => product.discountPercentage >= 10);
         break;
       case "25% off or more":

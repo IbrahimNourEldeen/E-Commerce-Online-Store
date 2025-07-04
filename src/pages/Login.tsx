@@ -6,17 +6,20 @@ import CreateAcountComponent from "../components/registration/CreateAcountCompon
 import VerifyingMessage from "../components/registration/VerifyingMessage";
 import { LoginUser } from "../features/users/userSlice";
 import { useDispatch } from "react-redux";
+import EntringPassword from "../components/registration/EntringPassword";
+import { useNavigate } from "react-router-dom";
 
 const users = [
   {
     name: "ibrahim nour eldeen",
     number: "01011843602",
-    password: "*******",
+    password: "123456",
   },
 ];
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -25,91 +28,91 @@ const Login = () => {
   const [country, setCountry] = useState<string>("EG +2");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [logedIn, setLogedIn] = useState<boolean>(false);
 
-  const [errorCreation, setErrorCreation] = useState<{
-    phone: string | null;
-    name: string | null;
-    password: string | null;
-    rePassword: string | null;
-  }>({
+  const [errorCreation, setErrorCreation] = useState({
     phone: null,
     name: null,
     password: null,
     rePassword: null,
   });
 
-  const [confirmed, setConfirm] = useState<{
-    phone: boolean;
-    name: boolean;
-    password: boolean;
-    rePassword: boolean;
-  }>({
+  const [confirmed, setConfirm] = useState({
     phone: false,
     name: false,
     password: false,
     rePassword: false,
   });
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (formNumber === 1) {
       if (!phone) {
         setError("Phone number is required");
-      } else if (phone.length !== 11) {
+        return;
+      }
+      if (phone.length !== 11) {
         setError("Invalid number");
+        return;
+      }
+
+      const user = users.find((u) => u.number === phone);
+
+      if (!user) {
+        setFormNumber(2); // مستخدم جديد
+        return;
+      }
+
+      // ✅ الشرط هنا
+      if (!password) {
+        setFormNumber(10); // روح صفحة إدخال الباسورد
+        return;
+      }
+
+      if (user.password === password) {
+        dispatch(
+          LoginUser({
+            name: user.name,
+            phone: user.number,
+            password: user.password,
+          })
+        );
+        navigate("/", { replace: true });
       } else {
-        const user = users.find((u) => u.number == phone);
-        if (!user) {
-          setFormNumber(2);
-        }
+        setError("Incorrect password");
       }
     } else if (formNumber === 3) {
-      const newErrors: typeof errorCreation = {
+      // إنشاء حساب جديد
+      const newErrors = {
         phone: null,
         name: null,
         password: null,
         rePassword: null,
       };
 
-      const newConfirmed: typeof confirmed = {
+      const newConfirmed = {
         phone: false,
         name: false,
         password: false,
         rePassword: false,
       };
 
-      if (!phone) {
-        newErrors.phone = "Phone number is required";
-      } else if (phone.length !== 11) {
-        newErrors.phone = "Invalid number";
-      } else {
-        newConfirmed.phone = true;
-      }
+      if (!phone) newErrors.phone = "Phone number is required";
+      else if (phone.length !== 11) newErrors.phone = "Invalid number";
+      else newConfirmed.phone = true;
 
-      if (!name) {
-        newErrors.name = "Name is required";
-      } else if (name.length < 5) {
-        newErrors.name = "Invalid name";
-      } else {
-        newConfirmed.name = true;
-      }
+      if (!name) newErrors.name = "Name is required";
+      else if (name.length < 5) newErrors.name = "Invalid name";
+      else newConfirmed.name = true;
 
-      if (!password) {
-        newErrors.password = "Password is required";
-      } else if (password.length < 5) {
-        newErrors.password = "Invalid password";
-      } else {
-        newConfirmed.password = true;
-      }
+      if (!password) newErrors.password = "Password is required";
+      else if (password.length < 5) newErrors.password = "Invalid password";
+      else newConfirmed.password = true;
 
-      if (!rePassword) {
-        newErrors.rePassword = "Confirm password";
-      } else if (password !== rePassword) {
+      if (!rePassword) newErrors.rePassword = "Confirm password";
+      else if (password !== rePassword)
         newErrors.rePassword = "Passwords do not match";
-      } else {
-        newConfirmed.rePassword = true;
-      }
+      else newConfirmed.rePassword = true;
 
       setErrorCreation(newErrors);
       setConfirm(newConfirmed);
@@ -119,19 +122,16 @@ const Login = () => {
         setFormNumber(4);
       }
     }
-
-    if(logedIn){
-      dispatch(LoginUser(name, phone, password))
-    }
   };
 
   return (
     <div className="min-h-[100vh]">
       <div className="min-h-[60%] flex items-center flex-col">
-        <div className="">
+        <div>
           <img src={icon} alt="" className="w-[200px]" />
         </div>
-        {formNumber == 1 ? (
+
+        {formNumber === 1 && (
           <Signin
             handleSubmit={handleSubmit}
             error={error}
@@ -141,13 +141,17 @@ const Login = () => {
             country={country}
             setCountry={setCountry}
           />
-        ) : formNumber == 2 ? (
+        )}
+
+        {formNumber === 2 && (
           <NewComponent
             country={country}
             phone={phone}
             setFormNumber={setFormNumber}
           />
-        ) : formNumber == 3 ? (
+        )}
+
+        {formNumber === 3 && (
           <CreateAcountComponent
             handleSubmit={handleSubmit}
             errorCreation={errorCreation}
@@ -163,32 +167,47 @@ const Login = () => {
             rePassword={rePassword}
             setRePassword={setRePassword}
           />
-        ) : formNumber == 4 ? (
-          <VerifyingMessage setFormNumber={setFormNumber} phone={phone} country={country} setLogedIn={setLogedIn}/>
-        ) : (
-          ""
+        )}
+
+        {formNumber === 4 && (
+          <VerifyingMessage
+            setFormNumber={setFormNumber}
+            phone={phone}
+            country={country}
+            setLogedIn={(val) => {
+              if (val) {
+                dispatch(LoginUser({ name, phone, password }));
+                navigate("/", { replace: true });
+              }
+            }}
+          />
+        )}
+
+        {formNumber === 10 && (
+          <EntringPassword
+            phone={phone}
+            country={country}
+            setPassword={setPassword}
+            setFormNumber={setFormNumber}
+            password={password}
+          />
         )}
       </div>
+
       <div className="max-h-40% border-t-2 border-gray-300 text-sm p-5 mt-10">
         <ul className="flex justify-center gap-x-3 text-blue-800">
-          <li className="">
-            <a href="" className="">
-              Conditions of Use
-            </a>
+          <li>
+            <a href="">Conditions of Use</a>
           </li>
-          <li className="">
-            <a href="" className="">
-              Privacy Notice
-            </a>
+          <li>
+            <a href="">Privacy Notice</a>
           </li>
-          <li className="">
-            <a href="" className="">
-              Help
-            </a>
+          <li>
+            <a href="">Help</a>
           </li>
         </ul>
         <p className="text-center mt-2 text-gray-700">
-          © 1996–2025, awfar shop, Inc.
+          © 1996–2025, Awfar Shop, Inc.
         </p>
       </div>
     </div>

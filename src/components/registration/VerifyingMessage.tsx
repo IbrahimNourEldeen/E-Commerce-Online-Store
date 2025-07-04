@@ -1,59 +1,52 @@
-import type React from "react";
 import { useState } from "react";
 import { GoAlertFill } from "react-icons/go";
-// import { useNavigate } from "react-router-dom";
 
-interface NewProps {
+interface VerifyingMessageProps {
   setFormNumber: (value: number) => void;
   phone: string;
   country: string;
   setLogedIn: (value: boolean) => void;
 }
 
-const VerifyingMessage: React.FC<NewProps> = ({
+const VerifyingMessage: React.FC<VerifyingMessageProps> = ({
   phone,
-  setFormNumber,
   country,
+  setFormNumber,
   setLogedIn,
 }) => {
-  const [num, setNum] = useState<number>(1);
+  const [step, setStep] = useState<1 | 2>(1);
   const [otp, setOtp] = useState<string>("");
   const [sentCode, setSentCode] = useState<string>("");
   const [error, setError] = useState<string>("");
 
-  const sendVerificationCode = (phone: string) => {
+  const sendVerificationCode = () => {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-
     const message = `Your verification code is: ${code}`;
     const formattedPhone = phone.startsWith("+") ? phone : `+2${phone}`;
-
-    const url = `https://wa.me/${formattedPhone.replace(
-      /[^0-9]/g,
-      ""
-    )}?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/${formattedPhone.replace(/\D/g, "")}?text=${encodeURIComponent(message)}`;
 
     window.open(url, "_blank");
     setSentCode(code);
-    setNum(2);
+    setStep(2);
   };
 
   const handleFirstSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    sendVerificationCode(phone);
+    sendVerificationCode();
   };
 
   const handleOtpSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (otp === sentCode) {
-      setLogedIn(true);
-    } else {
-      setError("Invalid OTP code. Please try again.");
+    if (otp !== sentCode) {
+      setError("Incorrect OTP. Please try again.");
+      return;
     }
+    setLogedIn(true);
   };
 
   return (
     <>
-      {num === 1 ? (
+      {step === 1 ? (
         <div className="mt-5 p-5 w-[25%]">
           <form onSubmit={handleFirstSubmit}>
             <div className="max-w-96 mx-auto">
@@ -64,18 +57,17 @@ const VerifyingMessage: React.FC<NewProps> = ({
                   using WhatsApp instead.
                 </p>
               </div>
+              <input
+                type="submit"
+                value="Verify using WhatsApp"
+                className="bg-amber-300 w-full my-3 py-2 text-sm rounded-2xl cursor-pointer"
+              />
+              <p className="text-sm">
+                WhatsApp is a messaging and communication app that you can
+                download on your device. By continuing, you are opting in to
+                Awfar sending your OTP to your phone number via WhatsApp.
+              </p>
             </div>
-            <input
-              type="submit"
-              value="Verify using WhatsApp"
-              className="bg-amber-300 w-full my-3 py-2 text-sm rounded-2xl cursor-pointer"
-            />
-            <p className="text-sm">
-              WhatsApp is a messaging and communication app that you can
-              download on your device. By continuing, you are opting in to
-              Amazon sending your OTP to your phone number on WhatsApp as
-              opposed to SMS.
-            </p>
           </form>
         </div>
       ) : (
@@ -98,26 +90,22 @@ const VerifyingMessage: React.FC<NewProps> = ({
                   Change
                 </button>
               </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">
-                  Enter OTP
-                </label>
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => {
-                    setOtp(e.target.value);
-                    setError("");
-                  }}
-                  placeholder="Enter the 6-digit code"
-                  className="flex outline-none w-full items-center text-gray-700 placeholder-gray-400 border border-gray-300 rounded-md px-3 py-1 shadow-sm"
-                />
-                {error && (
-                  <p className="text-red-500 text-sm mt-1 font-medium">
-                    {error}
-                  </p>
-                )}
-              </div>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                Enter OTP
+              </label>
+              <input
+                type="text"
+                value={otp}
+                onChange={(e) => {
+                  setOtp(e.target.value);
+                  setError("");
+                }}
+                placeholder="Enter the 6-digit code"
+                className="flex outline-none w-full items-center text-gray-700 placeholder-gray-400 border border-gray-300 rounded-md px-3 py-1 shadow-sm"
+              />
+              {error && (
+                <p className="text-red-500 text-sm mt-1 font-medium">{error}</p>
+              )}
             </div>
             <input
               type="submit"

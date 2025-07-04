@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import { setSelectedDiscount } from "../features/products/filterSlice";
 import { applyFilters } from "../features/products/thunks/filterThunks";
 
+
 const Discount = () => {
   const dispatch = useDispatch();
 
