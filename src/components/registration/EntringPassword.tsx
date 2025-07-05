@@ -1,16 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosAlert } from "react-icons/io";
 import { useDispatch } from "react-redux";
-import { LoginUser } from "../../features/users/userSlice"; // تأكد من المسار الصحيح
+import { LoginUser } from "../../features/users/userSlice";
 import { useNavigate } from "react-router-dom";
-
-const users = [
-  {
-    name: "ibrahim nour eldeen",
-    number: "01011843602",
-    password: "*******",
-  },
-];
 
 interface NewProps {
   phone: string;
@@ -30,11 +22,17 @@ const EntringPassword: React.FC<NewProps> = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  const [users, setUsers] = useState("");
 
+  useEffect(() => {
+    fetch("/public/users.json")
+    .then(response=> response.json())
+    .then(data=> setUsers(data))
+    .catch(err=>console.log(err))
+  }, []);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const user = users.find((u) => u.number === phone);
+    const user = users?.find((u) => u.number === phone);
     if (!user) {
       setError("User not found");
       return;
@@ -60,7 +58,9 @@ const EntringPassword: React.FC<NewProps> = ({
       <form onSubmit={handleSubmit}>
         <div className="max-w-sm mx-auto">
           <div>
-            <span>{country} {phone}</span>
+            <span>
+              {country} {phone}
+            </span>
             <button
               className="text-blue-600 hover:text-blue-800 cursor-pointer ms-2"
               onClick={() => setFormNumber(1)}

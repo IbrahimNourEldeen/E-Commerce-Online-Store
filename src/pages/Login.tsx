@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import icon from "../assets/icon.png";
 import Signin from "../components/registration/Signin";
 import NewComponent from "../components/registration/NewComponent";
@@ -9,18 +9,11 @@ import { useDispatch } from "react-redux";
 import EntringPassword from "../components/registration/EntringPassword";
 import { useNavigate } from "react-router-dom";
 
-const users = [
-  {
-    name: "ibrahim nour eldeen",
-    number: "01011843602",
-    password: "123456",
-  },
-];
-
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [users, setUsers] = useState("")
   const [name, setName] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [rePassword, setRePassword] = useState<string>("");
@@ -43,6 +36,13 @@ const Login = () => {
     rePassword: false,
   });
 
+  useEffect(()=>{
+    fetch("/users.json")
+    .then(response=>response.json())
+    .then(data=>setUsers(data))
+    .catch(error=>console.log(error))
+  },[])  
+  
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -56,16 +56,15 @@ const Login = () => {
         return;
       }
 
-      const user = users.find((u) => u.number === phone);
+      const user = users?.find((u) => u.number === phone);
 
       if (!user) {
-        setFormNumber(2); // مستخدم جديد
+        setFormNumber(2); 
         return;
       }
 
-      // ✅ الشرط هنا
       if (!password) {
-        setFormNumber(10); // روح صفحة إدخال الباسورد
+        setFormNumber(10);
         return;
       }
 
@@ -82,7 +81,6 @@ const Login = () => {
         setError("Incorrect password");
       }
     } else if (formNumber === 3) {
-      // إنشاء حساب جديد
       const newErrors = {
         phone: null,
         name: null,
