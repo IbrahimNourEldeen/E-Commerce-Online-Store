@@ -9,6 +9,7 @@ import NewComponent from "./components/registration/NewComponent";
 import CreateAcountComponent from "./components/registration/CreateAcountComponent";
 import VerifyingMessage from "./components/registration/VerifyingMessage";
 import EntringPassword from "./components/registration/EntringPassword";
+import Checkout from "./pages/Checkout";
 
 const router = createBrowserRouter([
   {

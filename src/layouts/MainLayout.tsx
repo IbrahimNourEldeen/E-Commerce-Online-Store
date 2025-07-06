@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import Login from "../pages/Login";
 import { useSelector } from "react-redux";
 import type { RootState } from "../store/Store";
+import Checkout from "../pages/Checkout";
 
 const MainLayout = () => {
   const isAuthed = useSelector((state: RootState) => state.user.isAuthed);
@@ -17,7 +18,8 @@ const MainLayout = () => {
       <Footer />
     </>
   ) : (
-    <Login />
+    // <Login />
+    <Checkout/>
   );
 };
 
